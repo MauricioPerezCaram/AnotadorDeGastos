@@ -55,33 +55,38 @@ const Formulario = () => {
   );
 
   return (
-    <div>
+    <div className="form">
       <form onSubmit={handleSubmit}>
         <input
+          className="input"
           type="text"
           placeholder="Cliente"
           value={cliente}
           onChange={(e) => setCliente(e.target.value)}
         />
         <input
+          className="input"
           type="text"
           placeholder="Servicio"
           value={servicio}
           onChange={(e) => setServicio(e.target.value)}
         />
         <input
+          className="input"
           type="number"
           placeholder="Monto"
           value={monto}
           onChange={(e) => setMonto(e.target.value)}
         />
         <input
+          className="input"
           type="text"
           placeholder="Forma de pago"
           value={formaPago}
           onChange={(e) => setFormaPago(e.target.value)}
         />
         <input
+          className="submit"
           type="submit"
           value={editandoIndex !== null ? "Guardar cambios" : "Enviar"}
         />
@@ -89,7 +94,7 @@ const Formulario = () => {
 
       {elementosEnviados.length > 0 && (
         <div>
-          <h2>Elementos Enviados:</h2>
+          <h2>Listado de clientes:</h2>
           <ul>
             {elementosEnviados.map((elemento, index) => (
               <li key={index}>
