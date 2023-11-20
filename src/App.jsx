@@ -3,7 +3,7 @@ import Formulario from "./components/Formulario";
 import Titulo from "./components/Titulo";
 function App() {
   return (
-    <div>
+    <div className="app">
       <Titulo />
       <Formulario />
     </div>

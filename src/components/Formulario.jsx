@@ -94,20 +94,29 @@ const Formulario = () => {
 
       {elementosEnviados.length > 0 && (
         <div>
-          <h2>Listado de clientes:</h2>
+          <h2>Trabajos realizados:</h2>
           <ul>
             {elementosEnviados.map((elemento, index) => (
-              <li key={index}>
-                Cliente: {elemento.cliente}, Servicio: {elemento.servicio},
-                Monto: {elemento.monto}, Forma de pago: {elemento.formaPago}
-                <button onClick={() => handleEditar(index)}>Editar</button>
-                <button onClick={() => handleEliminar(index)}>Eliminar</button>
-              </li>
+              <div>
+                <li key={index}>Cliente: {elemento.cliente}</li>
+                <li>Servicio: {elemento.servicio}</li>
+                <li>Monto: $ {elemento.monto}</li>
+                <li>Forma de pago: {elemento.formaPago}</li>
+                <button className="submit" onClick={() => handleEditar(index)}>
+                  Editar
+                </button>
+                <button
+                  className="submit"
+                  onClick={() => handleEliminar(index)}
+                >
+                  Eliminar
+                </button>
+              </div>
             ))}
           </ul>
 
           {/* Mostrar la suma total de los montos */}
-          <p>Total: {totalMonto.toFixed(2)}</p>
+          <h3>Total: $ {totalMonto.toFixed(2)}</h3>
         </div>
       )}
     </div>
