@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const Formulario = () => {
+  const elementoInicial =
+    JSON.parse(localStorage.getItem("elementosenviados")) || {};
+
   const [cliente, setCliente] = useState("");
   const [servicio, setServicio] = useState("");
   const [monto, setMonto] = useState("");
   const [formaPago, setFormaPago] = useState("");
-  const [elementosEnviados, setElementosEnviados] = useState([]);
+  const [elementosEnviados, setElementosEnviados] = useState(elementoInicial);
   const [editandoIndex, setEditandoIndex] = useState(null);
 
   const handleSubmit = (e) => {
@@ -24,7 +27,10 @@ const Formulario = () => {
       setElementosEnviados(nuevosElementos);
       setEditandoIndex(null);
     } else {
-      setElementosEnviados([...elementosEnviados, nuevoElemento]);
+      setElementosEnviados({
+        ...elementosEnviados,
+        [Date.now()]: nuevoElemento,
+      });
     }
 
     setCliente("");
@@ -34,7 +40,8 @@ const Formulario = () => {
   };
 
   const handleEditar = (index) => {
-    const elementoEditado = elementosEnviados[index];
+    const elementosArray = Object.values(elementosEnviados);
+    const elementoEditado = elementosArray[index];
     setCliente(elementoEditado.cliente);
     setServicio(elementoEditado.servicio);
     setMonto(elementoEditado.monto);
@@ -43,16 +50,23 @@ const Formulario = () => {
   };
 
   const handleEliminar = (index) => {
-    const nuevosElementos = [...elementosEnviados];
-    nuevosElementos.splice(index, 1);
+    const nuevosElementos = { ...elementosEnviados };
+    delete nuevosElementos[index];
     setElementosEnviados(nuevosElementos);
   };
 
   // Calcular la suma total de los montos
-  const totalMonto = elementosEnviados.reduce(
+  const totalMonto = Object.values(elementosEnviados).reduce(
     (total, elemento) => total + parseFloat(elemento.monto),
     0
   );
+
+  useEffect(() => {
+    localStorage.setItem(
+      "elementosenviados",
+      JSON.stringify(elementosEnviados)
+    );
+  }, [elementosEnviados]);
 
   return (
     <div className="form">
@@ -92,23 +106,20 @@ const Formulario = () => {
         />
       </form>
 
-      {elementosEnviados.length > 0 && (
+      {Object.keys(elementosEnviados).length > 0 && (
         <div>
           <h2>Trabajos realizados:</h2>
           <ul>
-            {elementosEnviados.map((elemento, index) => (
-              <div>
-                <li key={index}>Cliente: {elemento.cliente}</li>
+            {Object.entries(elementosEnviados).map(([key, elemento], index) => (
+              <div key={key}>
+                <li>Cliente: {elemento.cliente}</li>
                 <li>Servicio: {elemento.servicio}</li>
                 <li>Monto: $ {elemento.monto}</li>
                 <li>Forma de pago: {elemento.formaPago}</li>
-                <button className="submit" onClick={() => handleEditar(index)}>
+                <button className="submit" onClick={() => handleEditar(key)}>
                   Editar
                 </button>
-                <button
-                  className="submit"
-                  onClick={() => handleEliminar(index)}
-                >
+                <button className="submit" onClick={() => handleEliminar(key)}>
                   Eliminar
                 </button>
               </div>
