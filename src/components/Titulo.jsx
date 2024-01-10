@@ -1,7 +1,7 @@
 const Titulo = () => {
   return (
     <div>
-      <h1>Mc Nails Room Finances</h1>
+      <h1>Anotador de gastos</h1>
     </div>
   );
 };

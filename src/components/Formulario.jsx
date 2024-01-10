@@ -4,8 +4,7 @@ const Formulario = () => {
   const elementoInicial =
     JSON.parse(localStorage.getItem("elementosenviados")) || {};
 
-  const [cliente, setCliente] = useState("");
-  const [servicio, setServicio] = useState("");
+  const [gasto, setGasto] = useState("");
   const [monto, setMonto] = useState("");
   const [formaPago, setFormaPago] = useState("");
   const [elementosEnviados, setElementosEnviados] = useState(elementoInicial);
@@ -15,8 +14,7 @@ const Formulario = () => {
     e.preventDefault();
 
     const nuevoElemento = {
-      cliente,
-      servicio,
+      gasto,
       monto,
       formaPago,
     };
@@ -27,28 +25,18 @@ const Formulario = () => {
       setElementosEnviados(nuevosElementos);
       setEditandoIndex(null);
     } else {
-      setElementosEnviados({
-        ...elementosEnviados,
+      setElementosEnviados((prevElementos) => ({
+        ...prevElementos,
         [Date.now()]: nuevoElemento,
-      });
+      }));
     }
 
-    setCliente("");
-    setServicio("");
+    setGasto("");
     setMonto("");
     setFormaPago("");
   };
 
-  const handleEditar = (index) => {
-    const elementosArray = Object.values(elementosEnviados);
-    const elementoEditado = elementosArray[index];
-    setCliente(elementoEditado.cliente);
-    setServicio(elementoEditado.servicio);
-    setMonto(elementoEditado.monto);
-    setFormaPago(elementoEditado.formaPago);
-    setEditandoIndex(index);
-  };
-
+  
   const handleEliminar = (index) => {
     const nuevosElementos = { ...elementosEnviados };
     delete nuevosElementos[index];
@@ -57,7 +45,7 @@ const Formulario = () => {
 
   // Calcular la suma total de los montos
   const totalMonto = Object.values(elementosEnviados).reduce(
-    (total, elemento) => total + parseFloat(elemento.monto),
+    (total, elemento) => total + parseFloat(elemento.monto || 0),
     0
   );
 
@@ -74,16 +62,9 @@ const Formulario = () => {
         <input
           className="input"
           type="text"
-          placeholder="Cliente"
-          value={cliente}
-          onChange={(e) => setCliente(e.target.value)}
-        />
-        <input
-          className="input"
-          type="text"
-          placeholder="Servicio"
-          value={servicio}
-          onChange={(e) => setServicio(e.target.value)}
+          placeholder="Gasto"
+          value={gasto}
+          onChange={(e) => setGasto(e.target.value)}
         />
         <input
           className="input"
@@ -108,17 +89,13 @@ const Formulario = () => {
 
       {Object.keys(elementosEnviados).length > 0 && (
         <div>
-          <h2>Trabajos realizados:</h2>
+          <h2>Gastos realizados:</h2>
           <ul>
             {Object.entries(elementosEnviados).map(([key, elemento], index) => (
               <div key={key}>
-                <li>Cliente: {elemento.cliente}</li>
-                <li>Servicio: {elemento.servicio}</li>
+                <li>Gasto: {elemento.gasto}</li>
                 <li>Monto: $ {elemento.monto}</li>
                 <li>Forma de pago: {elemento.formaPago}</li>
-                <button className="submit" onClick={() => handleEditar(key)}>
-                  Editar
-                </button>
                 <button className="submit" onClick={() => handleEliminar(key)}>
                   Eliminar
                 </button>
@@ -127,7 +104,7 @@ const Formulario = () => {
           </ul>
 
           {/* Mostrar la suma total de los montos */}
-          <h3>Total: $ {totalMonto.toFixed(2)}</h3>
+          <h3>Total gastado: $ {totalMonto.toFixed(2)}</h3>
         </div>
       )}
     </div>
