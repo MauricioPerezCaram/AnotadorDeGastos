@@ -7,10 +7,12 @@ const Formulario = () => {
   const [gasto, setGasto] = useState("");
   const [monto, setMonto] = useState("");
   const [formaPago, setFormaPago] = useState("");
+  const [monedaPago, setMonedaPago] = useState("");
   const [elementosEnviados, setElementosEnviados] = useState(elementoInicial);
   const [editandoIndex, setEditandoIndex] = useState(null);
 
   const opcionesFormaPago = ["Efectivo", "Tarjeta de crédito", "Mercado Pago"];
+  const opcionesMonedaPago = ["Ars", "Clp"];
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -19,6 +21,7 @@ const Formulario = () => {
       gasto,
       monto,
       formaPago,
+      monedaPago,
     };
 
     if (editandoIndex !== null) {
@@ -36,6 +39,7 @@ const Formulario = () => {
     setGasto("");
     setMonto("");
     setFormaPago("");
+    setMonedaPago("");
   };
 
   const handleEditar = (index) => {
@@ -44,6 +48,7 @@ const Formulario = () => {
       setGasto(elementoEditado.gasto || "");
       setMonto(elementoEditado.monto || "");
       setFormaPago(elementoEditado.formaPago || "");
+      setMonedaPago(elementoEditado.monedaPago || "");
       setEditandoIndex(index);
     }
   };
@@ -54,7 +59,6 @@ const Formulario = () => {
     setElementosEnviados(nuevosElementos);
   };
 
-  // Calcular la suma total de los montos
   const totalMonto = Object.values(elementosEnviados).reduce(
     (total, elemento) => total + parseFloat(elemento.monto || 0),
     0
@@ -87,6 +91,20 @@ const Formulario = () => {
         <label>
           <select
             className="input"
+            value={monedaPago}
+            onChange={(e) => setMonedaPago(e.target.value)}
+          >
+            <option value="">Seleccionar moneda de pago</option>
+            {opcionesMonedaPago.map((opcion) => (
+              <option key={opcion} value={opcion}>
+                {opcion}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
+          <select
+            className="input"
             value={formaPago}
             onChange={(e) => setFormaPago(e.target.value)}
           >
@@ -99,7 +117,7 @@ const Formulario = () => {
           </select>
         </label>
         <input
-          className="submit"
+          className="submit-enviar"
           type="submit"
           value={editandoIndex !== null ? "Guardar cambios" : "Enviar"}
         />
@@ -110,17 +128,22 @@ const Formulario = () => {
           <h2>Gastos realizados:</h2>
           <ul>
             {Object.entries(elementosEnviados).map(([key, elemento], index) => (
-              <div key={key}>
-                <li>Gasto: {elemento.gasto}</li>
-                <li>Monto: $ {elemento.monto}</li>
-                <li>Forma de pago: {elemento.formaPago}</li>
-                <button className="submit" onClick={() => handleEditar(key)}>
-                  Editar
-                </button>
-                <button className="submit" onClick={() => handleEliminar(key)}>
-                  Eliminar
-                </button>
-
+              <div key={key} className="gasto">
+                <ul className="gasto-lista">
+                  <li>Gasto: {elemento.gasto}</li>
+                  <li>Monto: $ {elemento.monto}</li>
+                  <li>Forma de pago: {elemento.monedaPago}</li>
+                  <li>Forma de pago: {elemento.formaPago}</li>
+                  <button className="submit" onClick={() => handleEditar(key)}>
+                    Editar
+                  </button>
+                  <button
+                    className="submit-eliminar"
+                    onClick={() => handleEliminar(key)}
+                  >
+                    Eliminar
+                  </button>
+                </ul>
               </div>
             ))}
           </ul>
