@@ -12,15 +12,15 @@ const Formulario = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+  
     const nuevoElemento = {
       gasto,
       monto,
       formaPago,
     };
-
+  
     if (editandoIndex !== null) {
-      const nuevosElementos = [...elementosEnviados];
+      const nuevosElementos = { ...elementosEnviados };
       nuevosElementos[editandoIndex] = nuevoElemento;
       setElementosEnviados(nuevosElementos);
       setEditandoIndex(null);
@@ -30,13 +30,22 @@ const Formulario = () => {
         [Date.now()]: nuevoElemento,
       }));
     }
-
+  
     setGasto("");
     setMonto("");
     setFormaPago("");
   };
 
-  
+  const handleEditar = (index) => {
+    const elementoEditado = elementosEnviados[index];
+    if (elementoEditado) {
+      setGasto(elementoEditado.gasto || "");
+      setMonto(elementoEditado.monto || "");
+      setFormaPago(elementoEditado.formaPago || "");
+      setEditandoIndex(index);
+    }
+  };
+
   const handleEliminar = (index) => {
     const nuevosElementos = { ...elementosEnviados };
     delete nuevosElementos[index];
@@ -98,6 +107,9 @@ const Formulario = () => {
                 <li>Forma de pago: {elemento.formaPago}</li>
                 <button className="submit" onClick={() => handleEliminar(key)}>
                   Eliminar
+                </button>
+                <button className="submit" onClick={() => handleEditar(key)}>
+                  Editar
                 </button>
               </div>
             ))}
