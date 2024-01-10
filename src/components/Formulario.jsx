@@ -10,15 +10,17 @@ const Formulario = () => {
   const [elementosEnviados, setElementosEnviados] = useState(elementoInicial);
   const [editandoIndex, setEditandoIndex] = useState(null);
 
+  const opcionesFormaPago = ["Efectivo", "Tarjeta de crédito", "Mercado Pago"];
+
   const handleSubmit = (e) => {
     e.preventDefault();
-  
+
     const nuevoElemento = {
       gasto,
       monto,
       formaPago,
     };
-  
+
     if (editandoIndex !== null) {
       const nuevosElementos = { ...elementosEnviados };
       nuevosElementos[editandoIndex] = nuevoElemento;
@@ -30,7 +32,7 @@ const Formulario = () => {
         [Date.now()]: nuevoElemento,
       }));
     }
-  
+
     setGasto("");
     setMonto("");
     setFormaPago("");
@@ -82,13 +84,20 @@ const Formulario = () => {
           value={monto}
           onChange={(e) => setMonto(e.target.value)}
         />
-        <input
-          className="input"
-          type="text"
-          placeholder="Forma de pago"
-          value={formaPago}
-          onChange={(e) => setFormaPago(e.target.value)}
-        />
+        <label>
+          <select
+            className="input"
+            value={formaPago}
+            onChange={(e) => setFormaPago(e.target.value)}
+          >
+            <option value="">Seleccionar forma de pago</option>
+            {opcionesFormaPago.map((opcion) => (
+              <option key={opcion} value={opcion}>
+                {opcion}
+              </option>
+            ))}
+          </select>
+        </label>
         <input
           className="submit"
           type="submit"
@@ -105,12 +114,13 @@ const Formulario = () => {
                 <li>Gasto: {elemento.gasto}</li>
                 <li>Monto: $ {elemento.monto}</li>
                 <li>Forma de pago: {elemento.formaPago}</li>
-                <button className="submit" onClick={() => handleEliminar(key)}>
-                  Eliminar
-                </button>
                 <button className="submit" onClick={() => handleEditar(key)}>
                   Editar
                 </button>
+                <button className="submit" onClick={() => handleEliminar(key)}>
+                  Eliminar
+                </button>
+
               </div>
             ))}
           </ul>
